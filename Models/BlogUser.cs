@@ -45,3 +45,16 @@ namespace AbiraBlogProject.Models
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+//[StringLength(55, ErrorMessage = "The {0} must be at least {2} and no more than {1} character long", MinimumLength = 1)]
+//[Display(Name = "Last Name")]
