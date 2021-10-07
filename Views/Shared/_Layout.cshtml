@@ -20,6 +20,9 @@
 
     <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    
+    <!--Reference of Summernote -->
+    <link href="~/css/summernote-bs4.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
      <link href="~/css/clean-blog.min.css" rel="stylesheet" />
@@ -48,6 +51,7 @@
                         <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
                     </li>
                 </ul>
+                <partial name= "_LoginPartial"/>
             </div>
         </div>
     </nav>
@@ -114,10 +118,14 @@
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/bootstrap.bundle.min.js"></script>
 
+    <!--Reference of Summernote-->
+    <script src="~/js/summernote-bs4.min.js"></script>
+
     <!-- Custom scripts for this template -->
     <script src="~/js/clean-blog.min.js"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    @*Make sure to check whether the line below needs to be uncommented*@
+    @*@await RenderSectionAsync("Scripts", required: false)*@ 
 
 </body>
 

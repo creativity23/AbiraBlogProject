@@ -20,6 +20,11 @@ namespace AbiraBlogProject.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Required]
+        [StringLength(70, ErrorMessage = "The {0} must be at least {2} and no more than {1} character long", MinimumLength = 1)]
+        [Display(Name = "Display Name")]
+        public string DisplayName { get; set; }
+
         public byte[] Image { get; set; }
         public string ContentType { get; set; }
 

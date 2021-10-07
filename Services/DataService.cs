@@ -68,14 +68,16 @@ namespace AbiraBlogProject.Services
             var adminUser = new BlogUser()
             {
                 Email = "abiracal@yahoo.com",
+                //UserName = "abiracal@yahoo.com",
                 FirstName = "Abira",
                 LastName = "Roy",
+                //DisplayName = "Software Developer",
                 PhoneNumber = "(800) 563-1245",
                 EmailConfirmed = true
             };
 
             //Step 2: Use the UserManager to create a new user that is defined by adminUser
-            await _userManager.CreateAsync(adminUser, "abc&123!");
+            await _userManager.CreateAsync(adminUser, "Abc&123!");
 
             //Step 3: Add this new user to the Administrator role
             await _userManager.AddToRoleAsync(adminUser, BlogRole.Administrator.ToString());

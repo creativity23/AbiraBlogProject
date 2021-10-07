@@ -1,6 +1,7 @@
 using AbiraBlogProject.Data;
 using AbiraBlogProject.Models;
 using AbiraBlogProject.Services;
+using AbiraBlogProject.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -49,6 +50,17 @@ namespace AbiraBlogProject
 
             //Register my custom DataService class
             services.AddScoped<DataService> ();
+
+            //Regiter a preconfigured instance of the MailSettings class
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddScoped<IBlogEmailSender, EmailService>();
+
+            //Register our Image Service
+            services.AddScoped<IImageService, BasicImageService>();
+
+            //Register the Slug Service
+            services.AddScoped<ISlugService, BasicSlugService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

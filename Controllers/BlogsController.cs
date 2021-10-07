@@ -7,16 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AbiraBlogProject.Data;
 using AbiraBlogProject.Models;
+using AbiraBlogProject.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace AbiraBlogProject.Controllers
 {
     public class BlogsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public BlogsController(ApplicationDbContext context)
+        public BlogsController(ApplicationDbContext context, IImageService imageService, UserManager<BlogUser> userManager)
         {
             _context = context;
+            _imageService = imageService;
+            _userManager = userManager;
         }
 
         // GET: Blogs
@@ -46,6 +54,7 @@ namespace AbiraBlogProject.Controllers
         }
 
         // GET: Blogs/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -61,10 +70,16 @@ namespace AbiraBlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                blog.Created = DateTime.Now;
+                blog.BlogUserId = _userManager.GetUserId(User);
+                blog.ImageData = await _imageService.EncodeImageAsync(blog.Image);
+                blog.ContentType = _imageService.ContentType(blog.Image);
                 _context.Add(blog);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
             return View(blog);
         }
@@ -91,7 +106,7 @@ namespace AbiraBlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image")] Blog blog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile newImage)
         {
             if (id != blog.Id)
             {
@@ -102,7 +117,24 @@ namespace AbiraBlogProject.Controllers
             {
                 try
                 {
-                    _context.Update(blog);
+                    var newBlog = await _context.Blogs.FindAsync(blog.Id);
+
+                    newBlog.Updated = DateTime.Now;
+
+                    if (newBlog.Name != blog.Name)
+                    {
+                        newBlog.Name = blog.Name;
+                    }
+                    if(newBlog.Description !=blog.Description)
+                    {
+                        newBlog.Description = blog.Description; 
+                    }
+
+                    if(newImage is not null)
+                    {
+                        newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -118,6 +150,7 @@ namespace AbiraBlogProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
             return View(blog);
         }

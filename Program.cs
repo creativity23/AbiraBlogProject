@@ -26,7 +26,6 @@ namespace AbiraBlogProject
 
             await dataService.ManageDataAsync();
 
-
             host.Run();
 
         }
